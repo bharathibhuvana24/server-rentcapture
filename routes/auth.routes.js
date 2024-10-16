@@ -8,5 +8,6 @@ router.post("/signup", signup);
 router.post("/signin", signin);
 router.post('/google', google);
 router.post('/signout', signOut);
+router.post('/register-admin', registerAdmin);
 
 export default router;
