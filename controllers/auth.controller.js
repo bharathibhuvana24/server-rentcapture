@@ -88,7 +88,7 @@ export const registerAdmin = async (req, res) => {
   console.log('Request user:', req.user); // Log user info
   const { username, email, password } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = new User({ username, email, password: hashedPassword, role: 'admin' });
     await newUser.save();
 

@@ -116,3 +116,17 @@ export const getListings = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+export const getAutocompleteSuggestions = async (req, res) => {
+  const { searchTerm } = req.query;
+  try {
+    const suggestions = await Listing.find({
+      name: { $regex: searchTerm, $options: 'i' },
+    }).limit(10);
+    res.json({ success: true, suggestions });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching suggestions' });
+  }
+};
