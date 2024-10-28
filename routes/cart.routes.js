@@ -3,8 +3,8 @@ import { addItemToCart, getUserCart, clearCartOnLogout } from '../controllers/ca
 
 const router = express.Router();
 
-router.post('/add', addItemToCart);
+router.post('/update', addItemToCart);
 router.get('/', getUserCart);
-router.post('/logout', clearCartOnLogout);
+router.post('/clear', clearCartOnLogout);
 
 export default router;
