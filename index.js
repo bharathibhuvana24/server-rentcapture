@@ -10,6 +10,7 @@ import CheckRouter from './routes/availability.routes.js';
 import path from 'path'; // Ensure path is imported
 import paymentRoutes from './routes/payment.route.js';
 import adminRoutes from './routes/admin.routes.js';
+import cartRouter from './routes/cart.routes.js';
 
 dotenv.config();
 
@@ -36,7 +37,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
 app.use('/api/check', CheckRouter);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/admin',adminRoutes)
+app.use('/api/admin',adminRoutes);
+app.use('/api/cart', cartRouter);
 
 // Serve static files
 const __dirname = path.resolve();
