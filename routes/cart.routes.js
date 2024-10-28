@@ -3,9 +3,9 @@ import { addItemToCart, getUserCart, updateCart, clearCartOnLogout } from '../co
 
 const router = express.Router();
 
-router.post('/add', addItemToCart);
-router.get('/', getUserCart);
-router.post('/update', updateCart);
-router.post('/clear', clearCartOnLogout);
+router.post('/add/:id', addItemToCart);
+router.get('/:id', getUserCart);
+router.post('/update/:id', updateCart);
+router.post('/clear/:id', clearCartOnLogout);
 
 export default router;

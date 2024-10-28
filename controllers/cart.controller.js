@@ -2,7 +2,8 @@ import Cart from '../model/cart.model.js';
 
 // Add item to cart
 export const addItemToCart = async (req, res) => {
-  const { userId, productId, quantity } = req.body;
+  const { productId, quantity } = req.body;
+  const userId = req.params.id;
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -24,7 +25,7 @@ export const addItemToCart = async (req, res) => {
 
 // Get user cart
 export const getUserCart = async (req, res) => {
-  const { userId } = req.query;
+  const userId = req.params.id;
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -39,7 +40,8 @@ export const getUserCart = async (req, res) => {
 
 // Update cart
 export const updateCart = async (req, res) => {
-  const { userId, items } = req.body;
+  const { items } = req.body;
+  const userId = req.params.id;
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -57,7 +59,7 @@ export const updateCart = async (req, res) => {
 
 // Clear cart on logout
 export const clearCartOnLogout = async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.params.id;
   try {
     let cart = await Cart.findOne({ userId });
     if (cart) {
