@@ -22,20 +22,22 @@ export const addItemToCart = async (req, res) => {
   }
 };
 
+
+
 // Get user cart
 export const getUserCart = async (req, res) => {
-    const { userId } = req.query;
-    try {
-      let cart = await Cart.findOne({ userId });
-      if (!cart) {
-        cart = { items: [] }; // Ensure cart is never null
-      }
-      res.json({ success: true, cart });
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      res.status(500).json({ success: false, message: 'Failed to fetch cart' });
+  const { userId } = req.params; // Retrieve from params
+  try {
+    let cart = await Cart.findOne({ userId });
+    if (!cart) {
+      cart = { items: [] }; // Ensure cart is never null
     }
-  };
+    res.json({ success: true, cart });
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch cart' });
+  }
+};
   
 // Clear cart on logout
 export const clearCartOnLogout = (req, res) => {

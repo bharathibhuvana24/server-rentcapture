@@ -4,7 +4,7 @@ import { addItemToCart, getUserCart, clearCartOnLogout } from '../controllers/ca
 const router = express.Router();
 
 router.post('/update', addItemToCart);
-router.get('/', getUserCart);
+router.get('/:userId', getUserCart);
 router.post('/clear', clearCartOnLogout);
 
 export default router;
