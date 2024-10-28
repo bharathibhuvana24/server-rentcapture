@@ -66,7 +66,11 @@ const listingSchema = new mongoose.Schema({
   dropDate: {
     type: Date,
     required: true
-  }
+  },
+  bookedDates:[{
+    start : Date , 
+    end : Date,
+  }]
 });
 
 const Listing = mongoose.model('Listing', listingSchema);
