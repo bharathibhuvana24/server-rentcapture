@@ -22,11 +22,9 @@ export const addItemToCart = async (req, res) => {
   }
 };
 
-
-
 // Get user cart
 export const getUserCart = async (req, res) => {
-  const { userId } = req.params; // Retrieve from params
+  const { userId } = req.query;
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -38,9 +36,38 @@ export const getUserCart = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch cart' });
   }
 };
-  
+
+// Update cart
+export const updateCart = async (req, res) => {
+  const { userId, items } = req.body;
+  try {
+    let cart = await Cart.findOne({ userId });
+    if (!cart) {
+      cart = new Cart({ userId, items });
+    } else {
+      cart.items = items;
+    }
+    await cart.save();
+    res.json({ success: true, cart });
+  } catch (error) {
+    console.error('Error updating cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to update cart' });
+  }
+};
+
 // Clear cart on logout
-export const clearCartOnLogout = (req, res) => {
-  req.session.destroy();
-  res.json({ success: true });
+export const clearCartOnLogout = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    let cart = await Cart.findOne({ userId });
+    if (cart) {
+      cart.items = [];
+      await cart.save();
+    }
+    req.session.destroy();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to clear cart' });
+  }
 };
