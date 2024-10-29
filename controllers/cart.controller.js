@@ -1,11 +1,11 @@
 import Cart from '../model/cart.model.js';
 
+
 // Add item to cart
-
-
 export const addItemToCart = async (req, res) => {
   const { productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice } = req.body;
   const userId = req.params.id;
+  console.log('Received Request to Add Item:', { userId, productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice }); // Log incoming request data
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
