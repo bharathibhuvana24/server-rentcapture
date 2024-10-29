@@ -7,10 +7,11 @@ import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import listingRouter from './routes/listing.routes.js';
 import CheckRouter from './routes/availability.routes.js';
-import path from 'path'; // Ensure path is imported
+import path from 'path';
 import paymentRoutes from './routes/payment.route.js';
 import adminRoutes from './routes/admin.routes.js';
 import cartRouter from './routes/cart.routes.js';
+import bookingRouter from './routes/booking.routes.js'; // Import booking routes
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ const corsOptions = {
   origin: 'https://clientrentcapture.netlify.app',
   optionsSuccessStatus: 200,
 };
-app.use(cors(corsOptions)); // Using CORS options for all routes
+app.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO)
   .then(() => {
@@ -39,17 +40,15 @@ app.use('/api/check', CheckRouter);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRouter);
+app.use('/api/bookings', bookingRouter); // Use booking routes
 
-// Serve static files
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
-// Catch-all route to handle client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
