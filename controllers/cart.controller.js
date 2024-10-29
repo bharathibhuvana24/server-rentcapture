@@ -61,16 +61,22 @@ export const updateCart = async (req, res) => {
 };
 
 // Clear cart on logout
+
+
 export const clearCartOnLogout = async (req, res) => {
   const userId = req.params.id;
   try {
+    console.log('Clear Cart Request for User ID:', userId); // Log user ID for debugging
     let cart = await Cart.findOne({ userId });
-    if (cart) {
-      cart.items = [];
-      await cart.save();
+    if (!cart) {
+      console.log('Cart not found for User ID:', userId);
+      return res.status(404).json({ success: false, message: 'Cart not found' });
     }
+    cart.items = [];
+    await cart.save();
+    console.log('Cart cleared for User ID:', userId);
     req.session.destroy();
-    res.json({ success: true });
+    res.json({ success: true, message: 'Cart cleared successfully' });
   } catch (error) {
     console.error('Error clearing cart:', error);
     res.status(500).json({ success: false, message: 'Failed to clear cart' });
