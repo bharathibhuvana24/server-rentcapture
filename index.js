@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: 'https://clientrentcapture.netlify.app', // Corrected the origin (removed trailing '/')
+  origin: 'https://clientrentcapture.netlify.app',
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions)); // Using CORS options for all routes
@@ -37,7 +37,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
 app.use('/api/check', CheckRouter);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/admin',adminRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRouter);
 
 // Serve static files
