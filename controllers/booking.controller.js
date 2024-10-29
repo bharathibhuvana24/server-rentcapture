@@ -1,4 +1,4 @@
-import Listing from '../models/listing.model.js';
+import Listing from '../model/listing.model.js';
 
 export const bookDates = async (req, res) => {
   const { listingId, userId, startDate, endDate, quantity } = req.body;
