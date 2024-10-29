@@ -1,8 +1,10 @@
 import Cart from '../model/cart.model.js';
 
 // Add item to cart
+
+
 export const addItemToCart = async (req, res) => {
-  const { productId, quantity } = req.body;
+  const { productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice } = req.body;
   const userId = req.params.id;
   try {
     let cart = await Cart.findOne({ userId });
@@ -13,9 +15,10 @@ export const addItemToCart = async (req, res) => {
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({ productId, quantity });
+      cart.items.push({ productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice });
     }
     await cart.save();
+    console.log('Updated Cart:', cart); // Log updated cart
     res.json({ success: true, cart });
   } catch (error) {
     console.error('Error adding item to cart:', error);
