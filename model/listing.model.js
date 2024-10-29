@@ -67,11 +67,23 @@ const listingSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  bookedDates:[{
-    start : Date , 
-    end : Date,
+  stock: {
+    type: Number,
+    default: 1
+  },
+  bookedDates: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    start: Date,
+    end: Date,
+    quantity: {
+      type: Number,
+      required: true
+    }
   }]
 });
 
 const Listing = mongoose.model('Listing', listingSchema);
-export default Listing ;
+export default Listing;

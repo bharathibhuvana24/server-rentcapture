@@ -1,17 +1,17 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import userRouter from './routes/user.routes.js';
 import dotenv from 'dotenv';
-import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import userRouter from './routes/user.routes.js';
+import authRouter from './routes/auth.routes.js';
 import listingRouter from './routes/listing.routes.js';
 import CheckRouter from './routes/availability.routes.js';
-import path from 'path';
 import paymentRoutes from './routes/payment.route.js';
 import adminRoutes from './routes/admin.routes.js';
 import cartRouter from './routes/cart.routes.js';
-import bookingRouter from './routes/booking.routes.js'; // Import booking routes
+import bookingRouter from './routes/booking.routes.js';
 
 dotenv.config();
 
@@ -40,7 +40,7 @@ app.use('/api/check', CheckRouter);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRouter);
-app.use('/api/bookings', bookingRouter); // Use booking routes
+app.use('/api/bookings', bookingRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/client/dist')));
