@@ -9,19 +9,19 @@ export const addItemToCart = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    // Find listing by productId
+    // Find the listing to check stock
     const listing = await Listing.findById(productId);
     if (!listing) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
-    // Check if cart exists for userId
+    // Find or create the user's cart
     let cart = await Cart.findOne({ userId });
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
 
-    // Check stock
+    // Calculate the total booked quantity for this product in the cart
     const totalBooked = cart.items.reduce((total, item) => {
       if (item.productId.toString() === productId) {
         return total + item.quantity;
@@ -29,25 +29,35 @@ export const addItemToCart = async (req, res) => {
       return total;
     }, 0);
 
+    // Check if adding the requested quantity exceeds available stock
     if (totalBooked + quantity > listing.stock) {
       return res.status(400).json({ success: false, message: 'Not enough stock available' });
     }
 
-    // Add item to cart
+    // Add item to cart or update existing item
     const existingItem = cart.items.find(item => item.productId.toString() === productId);
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({ productId, quantity });
+      cart.items.push({ 
+        productId, 
+        quantity,
+        imageUrl: listing.imageUrls[0], // Ensure the imageUrl is added
+        name: listing.name, // Ensure the name is added
+        pickupDate: req.body.pickupDate, // Include pickupDate from request
+        dropDate: req.body.dropDate, // Include dropDate from request
+        totalPrice: listing.price * quantity, // Calculate totalPrice
+      });
     }
-    await cart.save();
 
+    await cart.save();
     res.json({ success: true, cart });
   } catch (error) {
     console.error('Error adding item to cart:', error);
     res.status(500).json({ success: false, message: 'Failed to add item to cart' });
   }
 };
+
 
 // Get user cart
 export const getUserCart = async (req, res) => {
