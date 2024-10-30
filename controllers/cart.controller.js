@@ -63,6 +63,7 @@ export const updateCart = async (req, res) => {
 // Clear cart on logout
 
 
+
 export const clearCartOnLogout = async (req, res) => {
   const userId = req.params.id;
   try {
@@ -75,10 +76,20 @@ export const clearCartOnLogout = async (req, res) => {
     cart.items = [];
     await cart.save();
     console.log('Cart cleared for User ID:', userId);
-    req.session.destroy();
-    res.json({ success: true, message: 'Cart cleared successfully' });
+    if (req.session) {
+      req.session.destroy(err => {
+        if (err) {
+          console.error('Error destroying session:', err);
+          return res.status(500).json({ success: false, message: 'Failed to destroy session' });
+        }
+        res.json({ success: true, message: 'Cart cleared successfully' });
+      });
+    } else {
+      res.json({ success: true, message: 'Cart cleared successfully' });
+    }
   } catch (error) {
     console.error('Error clearing cart:', error);
     res.status(500).json({ success: false, message: 'Failed to clear cart' });
   }
 };
+
