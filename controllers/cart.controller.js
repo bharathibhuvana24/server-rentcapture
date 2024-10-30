@@ -3,21 +3,27 @@ import Listing from '../model/listing.model.js'
 
 
 // Add item to cart
+
 export const addItemToCart = async (req, res) => {
-  const {productId, quantity } = req.body;
+  const { productId, quantity } = req.body;
   const userId = req.params.id;
 
   try {
+    // Find listing by productId
     const listing = await Listing.findById(productId);
-    const cart = await Cart.findOne({ userId });
-
     if (!listing) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
+    // Check if cart exists for userId
+    let cart = await Cart.findOne({ userId });
+    if (!cart) {
+      cart = new Cart({ userId, items: [] });
+    }
+
     // Check stock
     const totalBooked = cart.items.reduce((total, item) => {
-      if (item.productId === productId) {
+      if (item.productId.toString() === productId) {
         return total + item.quantity;
       }
       return total;
@@ -28,16 +34,14 @@ export const addItemToCart = async (req, res) => {
     }
 
     // Add item to cart
-    if (!cart) {
-      cart = new Cart({ userId, items: [] });
-    }
-    const existingItem = cart.items.find(item => item.productId === productId);
+    const existingItem = cart.items.find(item => item.productId.toString() === productId);
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
       cart.items.push({ productId, quantity });
     }
     await cart.save();
+
     res.json({ success: true, cart });
   } catch (error) {
     console.error('Error adding item to cart:', error);
