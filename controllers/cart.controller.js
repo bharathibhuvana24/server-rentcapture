@@ -1,13 +1,33 @@
 import Cart from '../model/cart.model.js';
+import Listing from '../model/listing.model.js'
 
 
 // Add item to cart
 export const addItemToCart = async (req, res) => {
-  const { productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice } = req.body;
+  const {productId, quantity } = req.body;
   const userId = req.params.id;
-  console.log('Received Request to Add Item:', { userId, productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice }); // Log incoming request data
+
   try {
-    let cart = await Cart.findOne({ userId });
+    const listing = await Listing.findById(productId);
+    const cart = await Cart.findOne({ userId });
+
+    if (!listing) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    // Check stock
+    const totalBooked = cart.items.reduce((total, item) => {
+      if (item.productId === productId) {
+        return total + item.quantity;
+      }
+      return total;
+    }, 0);
+
+    if (totalBooked + quantity > listing.stock) {
+      return res.status(400).json({ success: false, message: 'Not enough stock available' });
+    }
+
+    // Add item to cart
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
@@ -15,10 +35,9 @@ export const addItemToCart = async (req, res) => {
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({ productId, quantity, imageUrl, name, pickupDate, dropDate, totalPrice });
+      cart.items.push({ productId, quantity });
     }
     await cart.save();
-    console.log('Updated Cart:', cart); // Log updated cart
     res.json({ success: true, cart });
   } catch (error) {
     console.error('Error adding item to cart:', error);
